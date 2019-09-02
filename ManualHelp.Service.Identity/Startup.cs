@@ -1,57 +1,67 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ManualHelp.Common;
-using ManualHelp.Common.Authentication;
-using ManualHelp.Common.Extension;
 using ManualHelp.Common.RabbitMq.Extension;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ManualHelp.Service.Identity.Messages.Command.JwtIdentity;
+using ManualHelp.Service.Identity.Repository.Implementation.JwtIdentity;
+using ManualHelp.Service.Identity.Repository.Abstract.JwtIdentity;
+using ManualHelp.Service.Identity.Domain.JwtIdentity;
+using ManualHelp.Service.Identity.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
-namespace ManualHelp.Api
+namespace ManualHelp.Service.Identity
 {
     public class Startup
     {
-        private static readonly string[] Headers = new[] { "X-Operation", "X-Resource", "X-Total-Count" };
-        public IConfiguration Configuration { get; }
-        public IContainer Container { get; private set; }
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }        
+        }
+
+        public IConfiguration Configuration { get; }
+        public IContainer Container { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddCustomMvc();
-            services.AddMvc();
-            services.AddAuthorization();
-            //services.AddSwaggerDocs();
-            //services.AddConsul();
-            services.AddJwt();
-            //services.AddJaeger();
-            //services.AddOpenTracing();
-            //services.AddRedis();
-            //services.AddInitializers(typeof(IMongoDbInitializer));
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy", cors =>
-                        cors.AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader()
-                            .AllowCredentials()
-                            .WithExposedHeaders(Headers));
-            });
+            services.AddMvc(options=>
+                options.ReturnHttpNotAcceptable = true)
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+
+            // services.AddInitializers(typeof(IMongoDbInitializer));
+            //services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+
+            services.AddDbContext<IdentityServiceDatabase>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<IdentityServiceDatabase>()
+                .AddDefaultTokenProviders();
 
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyTypes(Assembly.GetEntryAssembly())
-                    .AsImplementedInterfaces();
+                .AsImplementedInterfaces();
             builder.Populate(services);
+
+            builder.RegisterType<IdentityService>().As<IIdentityService>()
+               .InstancePerDependency();
             builder.AddRabbitMq();
 
             builder.RegisterType<StartupInitializer>().As<IStartupInitializer>()
@@ -64,7 +74,7 @@ namespace ManualHelp.Api
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-             IApplicationLifetime applicationLifetime, 
+             IApplicationLifetime applicationLifetime,
             IStartupInitializer startupInitializer)
         {
             if (env.IsDevelopment())
@@ -79,11 +89,13 @@ namespace ManualHelp.Api
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseAuthentication();
+            app.UseRabbitMq()
+                .SubscribeCommand<SignInUser>();
 
-            app.UseRabbitMq();
-            
+
             applicationLifetime.ApplicationStopped.Register(() =>
-            {               
+            {
                 Container.Dispose();
             });
 
@@ -91,3 +103,4 @@ namespace ManualHelp.Api
         }
     }
 }
+
