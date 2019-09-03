@@ -24,6 +24,7 @@ using ManualHelp.Service.Identity.Domain.JwtIdentity;
 using ManualHelp.Service.Identity.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using ManualHelp.Common.Dispatchers;
 
 namespace ManualHelp.Service.Identity
 {
@@ -63,6 +64,7 @@ namespace ManualHelp.Service.Identity
             builder.RegisterType<IdentityService>().As<IIdentityService>()
                .InstancePerDependency();
             builder.AddRabbitMq();
+            builder.AddDispatchers();
 
             builder.RegisterType<StartupInitializer>().As<IStartupInitializer>()
                .InstancePerDependency();

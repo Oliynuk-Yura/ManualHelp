@@ -4,6 +4,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ManualHelp.Common;
 using ManualHelp.Common.Authentication;
+using ManualHelp.Common.Dispatchers;
 using ManualHelp.Common.Extension;
 using ManualHelp.Common.RabbitMq.Extension;
 using Microsoft.AspNetCore.Builder;
@@ -55,6 +56,7 @@ namespace ManualHelp.Api
                     .AsImplementedInterfaces();
             builder.Populate(services);
             builder.AddRabbitMq();
+            builder.AddDispatchers();
 
             builder.RegisterType<StartupInitializer>().As<IStartupInitializer>()
                .InstancePerDependency();
