@@ -38,6 +38,8 @@ namespace ManualHelp.Api
             //services.AddOpenTracing();
             //services.AddRedis();
             //services.AddInitializers(typeof(IMongoDbInitializer));
+
+            
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", cors =>

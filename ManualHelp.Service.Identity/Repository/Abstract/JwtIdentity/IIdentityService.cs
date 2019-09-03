@@ -1,4 +1,5 @@
 ﻿using ManualHelp.Service.Identity.Domain.JwtIdentity;
+using ManualHelp.Service.Identity.Query.JwtIdentity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace ManualHelp.Service.Identity.Repository.Abstract.JwtIdentity
     public interface IIdentityService
     {
         Task<User> SignUpAsync(string email, string password);
-        Task<JsonResult> SignInAsync(string email, string password); //JsonWebToken
+        Task<JsonWebToken> SignInAsync(string email, string password); 
         Task ChangePasswordAsync(Guid userId, string currentPassword, string newPassword);
     }
 }

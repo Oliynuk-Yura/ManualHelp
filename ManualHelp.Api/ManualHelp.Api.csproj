@@ -15,7 +15,6 @@
     <Folder Include="Messages\Event\" />
     <Folder Include="Models\" />
     <Folder Include="Query\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
