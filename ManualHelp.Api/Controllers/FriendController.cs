@@ -17,7 +17,7 @@ namespace ManualHelp.Api.Controllers
 
         public async Task<IActionResult> Index()
         {
-           await SendAsync<AddFriend>(new AddFriend()
+            await SendAsync<AddFriend>(new AddFriend()
             {
                 FriendId = new Guid(),
                 UserId = new Guid(),

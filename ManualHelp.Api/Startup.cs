@@ -79,6 +79,7 @@ namespace ManualHelp.Api
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseAuthentication();
 
             app.UseRabbitMq();
             

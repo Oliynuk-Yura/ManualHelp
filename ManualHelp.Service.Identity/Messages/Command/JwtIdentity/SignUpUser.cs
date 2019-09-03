@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ManualHelp.Service.Identity.Messages.Command.JwtIdentity
 {
-    public class SignInUser : ICommand
+    public class SignUpUser : ICommand
     {
         public string Email { get; set; }
         public string Password { get; set; }

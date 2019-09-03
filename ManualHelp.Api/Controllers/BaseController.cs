@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ManualHelp.Common.Authentication.JwtIdentity.Attributes;
 using ManualHelp.Common.Messages.Abstract;
 using ManualHelp.Common.RabbitMq.Abstract;
 using ManualHelp.Common.RabbitMq.Implementation;
@@ -11,7 +12,7 @@ namespace ManualHelp.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-   // [JwtAuth]
+    [JwtAuth]
     public abstract class BaseController : ControllerBase
     {
         private static readonly string AcceptLanguageHeader = "accept-language";

@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace ManualHelp.Service.Identity.Handler.JwtIdentity
 {
-    public class SignInUserHandler : ICommandHandler<SignInUser>
+    public class SignUpUserHandler : ICommandHandler<SignUpUser>
     {
         private readonly IIdentityService _identityService;
         private readonly IBusPublisher _busPublisher;
 
-        public SignInUserHandler()
+        public SignUpUserHandler()
         {
         }
 
-        public SignInUserHandler
+        public SignUpUserHandler
             (
             IIdentityService identityService,
             IBusPublisher busPublisher
@@ -29,7 +29,7 @@ namespace ManualHelp.Service.Identity.Handler.JwtIdentity
             _busPublisher = busPublisher;
         }
 
-        public async Task HandleAsync(SignInUser command, ICorrelationContext context)
+        public async Task HandleAsync(SignUpUser command, ICorrelationContext context)
         {
            var user = await _identityService.SignUpAsync(command.Email, command.Password);
 

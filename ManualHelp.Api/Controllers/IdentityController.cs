@@ -21,7 +21,7 @@ namespace ManualHelp.Api.Controllers
             await SendAsync(new SignUpUser
             {
                 Email = "test@test.ree",
-                Password = "Qwerty12345"
+                Password = "Qwerty1234511!"
             }, resource: "identity");
 
             return Ok();

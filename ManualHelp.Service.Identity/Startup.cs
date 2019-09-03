@@ -91,7 +91,7 @@ namespace ManualHelp.Service.Identity
             app.UseMvc();
             app.UseAuthentication();
             app.UseRabbitMq()
-                .SubscribeCommand<SignInUser>();
+                .SubscribeCommand<SignUpUser>();
 
 
             applicationLifetime.ApplicationStopped.Register(() =>
