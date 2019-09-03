@@ -26,5 +26,16 @@ namespace ManualHelp.Api.Controllers
 
             return Ok();
         }
+
+        public async Task<IActionResult> SignIn()
+        {
+            await SendAsync(new SignUpUser
+            {
+                Email = "test@test.ree",
+                Password = "Qwerty1234511!"
+            }, resource: "identity");
+
+            return Ok();
+        }
     }
 }
